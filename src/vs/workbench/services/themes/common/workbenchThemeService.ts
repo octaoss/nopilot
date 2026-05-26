@@ -49,7 +49,7 @@ export enum ThemeSettingDefaults {
 	COLOR_THEME_DARK_OLD = 'Default Dark+',
 	COLOR_THEME_LIGHT_OLD = 'Default Light+',
 
-	FILE_ICON_THEME = 'vs-seti',
+	FILE_ICON_THEME = 'vscode-jetbrains-icon-theme-2023-dark',
 	PRODUCT_ICON_THEME = 'Default',
 }
 

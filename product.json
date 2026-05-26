@@ -1,7 +1,7 @@
 {
-	"nameShort": "Nopilot",
-	"nameLong": "Nopilot",
-	"applicationName": "Nopilot",
+	"nameShort": "nopilot",
+	"nameLong": "nopilot",
+	"applicationName": "nopilot",
 	"dataFolderName": ".nopilot",
 	"win32MutexName": "nopilot",
 	"licenseName": "MIT",
