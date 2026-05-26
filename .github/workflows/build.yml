@@ -1,0 +1,110 @@
+name: Build OSS
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-linux:
+    name: Build Linux
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libxkbfile-dev pkg-config libsecret-1-dev libxss1 dbus xvfb libgtk-3-0 libgbm1 fakeroot
+          yarn --frozen-lockfile
+
+      - name: Build
+        run: |
+          node --max_old_space_size=6144 ./node_modules/gulp/bin/gulp.js vscode-linux-x64-min
+          node --max_old_space_size=6144 ./node_modules/gulp/bin/gulp.js vscode-linux-x64-build-deb
+
+      - name: Prepare Artifact
+        run: |
+          mv ../VSCode-linux-x64 ./vscode-linux-x64
+          tar -czf vscode-linux-x64.tar.gz vscode-linux-x64
+          cp .build/linux/deb/amd64/deb/*.deb ./
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: vscode-linux-x64
+          path: |
+            vscode-linux-x64.tar.gz
+            *.deb
+
+  build-windows:
+    name: Build Windows
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: |
+          yarn --frozen-lockfile
+
+      - name: Build
+        run: |
+          node --max_old_space_size=6144 ./node_modules/gulp/bin/gulp.js vscode-win32-x64-min
+          node --max_old_space_size=6144 ./node_modules/gulp/bin/gulp.js vscode-win32-x64-system-setup
+          node --max_old_space_size=6144 ./node_modules/gulp/bin/gulp.js vscode-win32-x64-user-setup
+
+      - name: Prepare Artifact
+        shell: pwsh
+        run: |
+          Move-Item ../VSCode-win32-x64 ./vscode-win32-x64
+          Compress-Archive -Path vscode-win32-x64 -DestinationPath vscode-win32-x64.zip
+          Get-ChildItem -Path .build/win32-x64/*-setup/*.exe | Copy-Item -Destination ./
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: vscode-win32-x64
+          path: |
+            vscode-win32-x64.zip
+            *.exe
+
+  build-macos:
+    name: Build macOS
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: |
+          yarn --frozen-lockfile
+
+      - name: Build
+        run: |
+          node --max_old_space_size=6144 ./node_modules/gulp/bin/gulp.js vscode-darwin-x64-min
+
+      - name: Prepare Artifact
+        run: |
+          mv ../VSCode-darwin-x64 ./vscode-darwin-x64
+          zip -r vscode-darwin-x64.zip vscode-darwin-x64
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: vscode-darwin-x64
+          path: vscode-darwin-x64.zip
