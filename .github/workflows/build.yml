@@ -8,10 +8,10 @@ jobs:
     name: Build Linux
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 16
           cache: 'yarn'
@@ -34,7 +34,7 @@ jobs:
           cp .build/linux/deb/amd64/deb/*.deb ./
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: vscode-linux-x64
           path: |
@@ -45,10 +45,10 @@ jobs:
     name: Build Windows
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 16
           cache: 'yarn'
@@ -71,7 +71,7 @@ jobs:
           Get-ChildItem -Path .build/win32-x64/*-setup/*.exe | Copy-Item -Destination ./
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: vscode-win32-x64
           path: |
@@ -82,10 +82,10 @@ jobs:
     name: Build macOS
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 16
           cache: 'yarn'
@@ -104,7 +104,7 @@ jobs:
           zip -r vscode-darwin-x64.zip vscode-darwin-x64
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: vscode-darwin-x64
           path: vscode-darwin-x64.zip
