@@ -1,0 +1,30 @@
+diff --git a/package.json b/package.json
+index e7c898f..abe6349 100644
+--- a/package.json
++++ b/package.json
+@@ -1,9 +1,10 @@
+ {
+-  "name": "code-oss-dev",
++  "name": "nopilot",
+   "version": "1.80.0",
+   "distro": "b12d0f94278d485affdf25a13a8563e0a792a7cc",
++  "description": "Code Editor Minimal, fast, and distraction-free — no AI, no telemetry, just code.",
+   "author": {
+-    "name": "Microsoft Corporation"
++    "name": "nopilot contributors"
+   },
+   "license": "MIT",
+   "main": "./out/main",
+@@ -224,10 +225,10 @@
+   },
+   "repository": {
+     "type": "git",
+-    "url": "https://github.com/microsoft/vscode.git"
++    "url": "https://github.com/nopilot/nopilot.git"
+   },
+   "bugs": {
+-    "url": "https://github.com/microsoft/vscode/issues"
++    "url": "https://github.com/nopilot/nopilot/issues"
+   },
+   "optionalDependencies": {
+     "windows-foreground-love": "0.5.0"

@@ -1,7 +1,31 @@
-# Visual Studio Code - Open Source ("Code - OSS")
+# Nopilot (Based On) Visual Studio Code - Open Source
+
 [![Feature Requests](https://img.shields.io/github/issues/microsoft/vscode/feature-request.svg)](https://github.com/microsoft/vscode/issues?q=is%3Aopen+is%3Aissue+label%3Afeature-request+sort%3Areactions-%2B1-desc)
-[![Bugs](https://img.shields.io/github/issues/microsoft/vscode/bug.svg)](https://github.com/microsoft/vscode/issues?utf8=✓&q=is%3Aissue+is%3Aopen+label%3Abug)
 [![Gitter](https://img.shields.io/badge/chat-on%20gitter-yellow.svg)](https://gitter.im/Microsoft/vscode)
+
+
+In a world of AI-assisted development and bloated tooling, NoPilot brings the focus back to the developer. Lightweight, transparent, and intentionally free from AI integrations, NoPilot is built for those who prefer skilln over suggestion and control over automation. Your editor should be a tool — not a co-author.
+
+## Features
+- **No AI:** No Copilot, no AI assistants, no chat.
+- **No Telemetry:** Privacy-first, telemetry is disabled by default.
+- **Just Code:** Lightweight and focused on the core editing experience.
+
+
+# Includes Extension
+```
+[Python] [PHP All In One]
+```
+## Build and Run
+
+```bash
+# Install dependencies
+yarn
+
+# Run the editor
+yarn watch
+./scripts/code.sh
+```
 
 ## The Repository
 

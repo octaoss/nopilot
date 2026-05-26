@@ -1,0 +1,22 @@
+diff --git a/src/vs/workbench/contrib/telemetry/browser/telemetry.contribution.ts b/src/vs/workbench/contrib/telemetry/browser/telemetry.contribution.ts
+index 1b4ad1b..cc0ef0f 100644
+--- a/src/vs/workbench/contrib/telemetry/browser/telemetry.contribution.ts
++++ b/src/vs/workbench/contrib/telemetry/browser/telemetry.contribution.ts
+@@ -3,9 +3,8 @@
+  *  Licensed under the MIT License. See License.txt in the project root for license information.
+  *--------------------------------------------------------------------------------------------*/
+ 
+-import { Registry } from 'vs/platform/registry/common/platform';
+-import { Extensions as WorkbenchExtensions, IWorkbenchContributionsRegistry, IWorkbenchContribution } from 'vs/workbench/common/contributions';
+-import { LifecyclePhase, ILifecycleService, StartupKind } from 'vs/workbench/services/lifecycle/common/lifecycle';
++import { IWorkbenchContribution } from 'vs/workbench/common/contributions';
++import { ILifecycleService, StartupKind } from 'vs/workbench/services/lifecycle/common/lifecycle';
+ import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+ import { IWorkspaceContextService, WorkbenchState } from 'vs/platform/workspace/common/workspace';
+ import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
+@@ -231,4 +230,4 @@ export class TelemetryContribution extends Disposable implements IWorkbenchContr
+ 	}
+ }
+ 
+-Registry.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench).registerWorkbenchContribution(TelemetryContribution, LifecyclePhase.Restored);
++// Registry.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench).registerWorkbenchContribution(TelemetryContribution, LifecyclePhase.Restored);

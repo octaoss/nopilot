@@ -1,0 +1,13 @@
+diff --git a/src/vs/workbench/contrib/welcomeDialog/browser/welcomeWidget.ts b/src/vs/workbench/contrib/welcomeDialog/browser/welcomeWidget.ts
+index 38ef2e3..9b37096 100644
+--- a/src/vs/workbench/contrib/welcomeDialog/browser/welcomeWidget.ts
++++ b/src/vs/workbench/contrib/welcomeDialog/browser/welcomeWidget.ts
+@@ -92,7 +92,7 @@ export class WelcomeWidget extends Disposable implements IOverlayWidget {
+ 
+ 		const renderBody = (message: string, icon: string): MarkdownString => {
+ 			const mds = new MarkdownString(undefined, { supportThemeIcons: true, supportHtml: true });
+-			mds.appendMarkdown(`<a class="copilot">$(${icon})</a>`);
++			mds.appendMarkdown(`<a class="nopilot">$(${icon})</a>`);
+ 			mds.appendMarkdown(message);
+ 			return mds;
+ 		};

@@ -55,14 +55,14 @@ pub const APPLICATION_NAME: &str = match option_env!("VSCODE_CLI_APPLICATION_NAM
 /// Full name of the product with its version.
 pub const PRODUCT_NAME_LONG: &str = match option_env!("VSCODE_CLI_NAME_LONG") {
 	Some(n) => n,
-	None => "Code - OSS",
+	None => "nopilot",
 };
 
 /// Name of the application without quality information.
 pub const QUALITYLESS_PRODUCT_NAME: &str = match option_env!("VSCODE_CLI_QUALITYLESS_PRODUCT_NAME")
 {
 	Some(n) => n,
-	None => "Code",
+	None => "nopilot",
 };
 
 /// Name of the application without quality information.
@@ -79,7 +79,7 @@ const NONINTERACTIVE_VAR: &str = "VSCODE_CLI_NONINTERACTIVE";
 /// Default data CLI data directory.
 pub const DEFAULT_DATA_PARENT_DIR: &str = match option_env!("VSCODE_CLI_DEFAULT_PARENT_DATA_DIR") {
 	Some(n) => n,
-	None => ".vscode-oss",
+	None => ".nopilot",
 };
 
 pub fn get_default_user_agent() -> String {

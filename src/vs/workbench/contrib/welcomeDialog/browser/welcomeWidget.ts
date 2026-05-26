@@ -92,7 +92,7 @@ export class WelcomeWidget extends Disposable implements IOverlayWidget {
 
 		const renderBody = (message: string, icon: string): MarkdownString => {
 			const mds = new MarkdownString(undefined, { supportThemeIcons: true, supportHtml: true });
-			mds.appendMarkdown(`<a class="copilot">$(${icon})</a>`);
+			mds.appendMarkdown(`<a class="nopilot">$(${icon})</a>`);
 			mds.appendMarkdown(message);
 			return mds;
 		};
