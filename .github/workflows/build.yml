@@ -16,10 +16,16 @@ jobs:
           node-version: 16
           cache: 'yarn'
 
+      - name: Setup Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
       - name: Install dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y libxkbfile-dev pkg-config libsecret-1-dev libxss1 dbus xvfb libgtk-3-0 libgbm1 fakeroot
+          pip install setuptools
           yarn --frozen-lockfile
 
       - name: Build
@@ -43,7 +49,9 @@ jobs:
 
   build-windows:
     name: Build Windows
-    runs-on: windows-latest
+    runs-on: windows-2022
+    env:
+      vs2022_install: C:\Program Files\Microsoft Visual Studio\2022\Enterprise
     steps:
       - uses: actions/checkout@v4
 
@@ -52,6 +60,11 @@ jobs:
         with:
           node-version: 16
           cache: 'yarn'
+
+      - name: Setup Python 2.7
+        uses: actions/setup-python@v5
+        with:
+          python-version: '2.7'
 
       - name: Install dependencies
         run: |
@@ -90,8 +103,14 @@ jobs:
           node-version: 16
           cache: 'yarn'
 
+      - name: Setup Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
       - name: Install dependencies
         run: |
+          pip install setuptools
           yarn --frozen-lockfile
 
       - name: Build
