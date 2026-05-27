@@ -96,6 +96,9 @@ import { IExtensionsProfileScannerService } from 'vs/platform/extensionManagemen
 import { ExtensionsProfileScannerService } from 'vs/platform/extensionManagement/electron-sandbox/extensionsProfileScannerService';
 import { SyncDescriptor } from 'vs/platform/instantiation/common/descriptors';
 
+import { Registry } from 'vs/platform/registry/common/platform';
+import { Extensions as ConfigurationExtensions, IConfigurationRegistry } from 'vs/platform/configuration/common/configurationRegistry';
+
 registerSingleton(IUserDataInitializationService, new SyncDescriptor(UserDataInitializationService, [[]], true));
 registerSingleton(IExtensionsProfileScannerService, ExtensionsProfileScannerService, InstantiationType.Delayed);
 
@@ -171,5 +174,22 @@ import 'vs/workbench/contrib/remoteTunnel/electron-sandbox/remoteTunnel.contribu
 
 //#endregion
 
+Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Configuration).registerDefaultConfigurations([
+	{
+		overrides: {
+			'workbench.iconTheme': 'vscode-jetbrains-icon-theme-2023-dark',
+			"workbench.colorTheme": "Dark 2026",
+			'telemetry.telemetryLevel': 'off',
+			"workbench.productIconTheme": "fluent-icons",
+			'extensions.ignoreRecommendations': true,
+			'workbench.startupEditor': 'none',
+			"window.titleBarStyle": "custom",
+			'window.commandCenter': false,
+			'chat.commandCenter.enabled': false,
+			"window.title": "${dirty}${activeEditorShort} — Nopilot © Octanio",
+		}
+	}
+]);
 
 export { main } from 'vs/workbench/electron-sandbox/desktop.main';
+
