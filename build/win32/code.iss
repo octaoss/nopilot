@@ -5,7 +5,7 @@
       : '; LicenseFile: "' + RepoDir + '\' + RootLicenseFileName + '"'
 
 [Setup]
-AppId={#AppId}
+AppId={{{#AppId}}
 AppName={#NameLong}
 AppVerName={#NameVersion}
 AppPublisher=Microsoft Corporation
