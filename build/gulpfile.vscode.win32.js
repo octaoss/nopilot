@@ -103,7 +103,7 @@ function buildWin32Setup(arch, target) {
 			TunnelServiceMutex: product.win32TunnelServiceMutex,
 			ApplicationName: product.applicationName,
 			Arch: arch,
-			AppId: { 'ia32': ia32AppId, 'x64': x64AppId, 'arm64': arm64AppId }[arch],
+			AppId: { 'ia32': ia32AppId, 'x64': x64AppId, 'arm64': arm64AppId }[arch].replace('{', '{{'),
 			IncompatibleTargetAppId: { 'ia32': product.win32AppId, 'x64': product.win32x64AppId, 'arm64': product.win32arm64AppId }[arch],
 			IncompatibleArchAppId: { 'ia32': x64AppId, 'x64': ia32AppId, 'arm64': ia32AppId }[arch],
 			AppUserId: product.win32AppUserModelId,
