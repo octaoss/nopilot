@@ -364,7 +364,7 @@
   "dependencies": {
     "http-shutdown": "^1.2.0",
     "ips": "^2.1.3",
-    "live-server": "file:lib\\live-server",
+    "live-server": "file:lib/live-server",
     "opn": "^6.0.0",
     "vsls": "^0.3.967"
   },
