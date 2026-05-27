@@ -37,16 +37,17 @@ jobs:
 
       - name: Prepare Artifact
         run: |
+          VERSION=$(jq -r .version package.json)
           mv ../VSCode-linux-x64 ./vscode-linux-x64
-          tar -czf vscode-linux-x64.tar.gz vscode-linux-x64
-          cp .build/linux/deb/amd64/deb/*.deb ./
+          tar -czf "vscode-linux-x64-${VERSION}-portable.tar.gz" vscode-linux-x64
+          for f in .build/linux/deb/amd64/deb/*.deb; do cp "$f" "vscode-linux-x64-${VERSION}.deb"; done
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v4
         with:
           name: vscode-linux-x64
           path: |
-            vscode-linux-x64.tar.gz
+            vscode-linux-x64-*-portable.tar.gz
             *.deb
 
   build-windows:
@@ -85,16 +86,18 @@ jobs:
       - name: Prepare Artifact
         shell: pwsh
         run: |
+          $version = (Get-Content package.json | ConvertFrom-Json).version
           Move-Item ../VSCode-win32-x64 ./vscode-win32-x64
-          Compress-Archive -Path vscode-win32-x64 -DestinationPath vscode-win32-x64.zip
-          Get-ChildItem -Path .build/win32-x64/*-setup/*.exe | Copy-Item -Destination ./
+          Compress-Archive -Path vscode-win32-x64 -DestinationPath "vscode-win32-x64-$version-portable.zip"
+          Copy-Item .build/win32-x64/*-setup/*system-setup*.exe -Destination "vscode-win32-x64-$version-system-setup.exe" -ErrorAction SilentlyContinue
+          Copy-Item .build/win32-x64/*-setup/*user-setup*.exe -Destination "vscode-win32-x64-$version-user-setup.exe" -ErrorAction SilentlyContinue
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v4
         with:
           name: vscode-win32-x64
           path: |
-            vscode-win32-x64.zip
+            vscode-win32-x64-*-portable.zip
             *.exe
 
   build-macos:
@@ -127,11 +130,39 @@ jobs:
 
       - name: Prepare Artifact
         run: |
+          VERSION=$(jq -r .version package.json)
           mv ../VSCode-darwin-x64 ./vscode-darwin-x64
-          zip -r vscode-darwin-x64.zip vscode-darwin-x64
+          zip -r "vscode-darwin-x64-${VERSION}.zip" vscode-darwin-x64
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v4
         with:
           name: vscode-darwin-x64
-          path: vscode-darwin-x64.zip
+          path: vscode-darwin-x64-*.zip
+
+  release:
+    name: Create Draft Release
+    needs: [build-linux, build-windows, build-macos]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get Version
+        id: get_version
+        run: echo "VERSION=$(jq -r .version package.json)" >> $GITHUB_OUTPUT
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+
+      - name: Create Draft Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: VS Code OSS ${{ steps.get_version.outputs.VERSION }}
+          tag_name: v${{ steps.get_version.outputs.VERSION }}
+          draft: true
+          files: artifacts/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
