@@ -56,7 +56,7 @@
 		}
 	],
 	"extensionsGallery": {
-		"serviceUrl": "https://open-vsx.org/vscode/gallery",
+		"serviceUrl": "https://customvsx-nonai.oktanio.workers.dev/vscode/gallery",
 		"itemUrl": "https://open-vsx.org/vscode/item"
 	},
 	"enableTelemetry": false

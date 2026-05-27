@@ -78,6 +78,7 @@ jobs:
       - name: Build
         run: |
           node --max_old_space_size=6144 ./node_modules/gulp/bin/gulp.js vscode-win32-x64-min
+          node --max_old_space_size=6144 ./node_modules/gulp/bin/gulp.js vscode-win32-x64-inno-updater
           node --max_old_space_size=6144 ./node_modules/gulp/bin/gulp.js vscode-win32-x64-system-setup
           node --max_old_space_size=6144 ./node_modules/gulp/bin/gulp.js vscode-win32-x64-user-setup
 
