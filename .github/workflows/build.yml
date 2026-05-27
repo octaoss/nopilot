@@ -22,6 +22,8 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           sudo apt-get update
           sudo apt-get install -y libxkbfile-dev pkg-config libsecret-1-dev libxss1 dbus xvfb libgtk-3-0 libgbm1 fakeroot
@@ -67,6 +69,8 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           pip install setuptools
           yarn --frozen-lockfile
@@ -110,6 +114,8 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           pip install setuptools
           yarn --frozen-lockfile
