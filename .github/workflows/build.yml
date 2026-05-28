@@ -1,7 +1,12 @@
-name: Build OSS
+name: Build Binaries Release
 
 on:
   workflow_dispatch:
+  push:
+    branches: [ "main" ]
+
+permissions:
+  contents: write
 
 jobs:
   build-linux:
@@ -89,8 +94,8 @@ jobs:
           $version = (Get-Content package.json | ConvertFrom-Json).version
           Move-Item ../VSCode-win32-x64 ./vscode-win32-x64
           Compress-Archive -Path vscode-win32-x64 -DestinationPath "vscode-win32-x64-$version-portable.zip"
-          Copy-Item .build/win32-x64/*-setup/*system-setup*.exe -Destination "vscode-win32-x64-$version-system-setup.exe" -ErrorAction SilentlyContinue
-          Copy-Item .build/win32-x64/*-setup/*user-setup*.exe -Destination "vscode-win32-x64-$version-user-setup.exe" -ErrorAction SilentlyContinue
+          Copy-Item .build/win32-x64/system-setup/VSCodeSetup.exe -Destination "vscode-win32-x64-$version-system-setup.exe" -ErrorAction SilentlyContinue
+          Copy-Item .build/win32-x64/user-setup/VSCodeSetup.exe -Destination "vscode-win32-x64-$version-user-setup.exe" -ErrorAction SilentlyContinue
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
