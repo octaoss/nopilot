@@ -53,10 +53,40 @@
 				"publisherId": "ms-vscode",
 				"publisherDisplayName": "ms-vscode"
 			}
+		},
+		{
+			"name": "ritwickdey.LiveServer",
+			"version": "5.7.10",
+			"repo": "https://github.com/ritwickdey/vscode-live-server",
+			"metadata": {
+				"id": "ritwickdey.LiveServer",
+				"publisherId": "ritwickdey",
+				"publisherDisplayName": "Ritwick Dey"
+			}
+		},
+		{
+			"name": "chadalen.vscode-jetbrains-icon-theme",
+			"version": "2.40.0",
+			"repo": "https://github.com/cadamsdev/vscode-jetbrains-icon-theme",
+			"metadata": {
+				"id": "chadalen.vscode-jetbrains-icon-theme",
+				"publisherId": "chadalen",
+				"publisherDisplayName": "Chad Adams"
+			}
+		},
+		{
+			"name": "miguelsolorio.fluent-icons",
+			"version": "0.0.19",
+			"repo": "https://github.com/misolori/vscode-fluent-icons",
+			"metadata": {
+				"id": "miguelsolorio.fluent-icons",
+				"publisherId": "miguelsolorio",
+				"publisherDisplayName": "Miguel Solorio"
+			}
 		}
 	],
 	"extensionsGallery": {
-		"serviceUrl": "https://open-vsx.org/vscode/gallery",
+		"serviceUrl": "https://customvsx-nonai.oktanio.workers.dev/vscode/gallery",
 		"itemUrl": "https://open-vsx.org/vscode/item"
 	},
 	"enableTelemetry": false
