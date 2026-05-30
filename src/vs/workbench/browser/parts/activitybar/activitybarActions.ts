@@ -389,6 +389,7 @@ export class AccountsActivityActionViewItem extends MenuActivityActionViewItem {
 	//#region groupedAccounts helpers
 
 	private async addOrUpdateAccount(providerId: string, account: AuthenticationSessionAccount): Promise<void> {
+
 		let accounts = this.groupedAccounts.get(providerId);
 		if (accounts) {
 			const existingAccount = accounts.find(a => a.id === account.id);
