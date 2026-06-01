@@ -137,6 +137,7 @@ import { ExtensionStorageService, IExtensionStorageService } from 'vs/platform/e
 import { IUserDataSyncLogService } from 'vs/platform/userDataSync/common/userDataSync';
 import { UserDataSyncLogService } from 'vs/platform/userDataSync/common/userDataSyncLog';
 
+
 registerSingleton(IUserDataSyncLogService, UserDataSyncLogService, InstantiationType.Delayed);
 registerSingleton(IIgnoredExtensionsManagementService, IgnoredExtensionsManagementService, InstantiationType.Delayed);
 registerSingleton(IGlobalExtensionEnablementService, GlobalExtensionEnablementService, InstantiationType.Delayed);
@@ -151,7 +152,6 @@ registerSingleton(IContextKeyService, ContextKeyService, InstantiationType.Delay
 registerSingleton(ITextResourceConfigurationService, TextResourceConfigurationService, InstantiationType.Delayed);
 registerSingleton(IDownloadService, DownloadService, InstantiationType.Delayed);
 registerSingleton(IOpenerService, OpenerService, InstantiationType.Delayed);
-
 //#endregion
 
 
@@ -159,7 +159,7 @@ registerSingleton(IOpenerService, OpenerService, InstantiationType.Delayed);
 
 // Telemetry
 import 'vs/workbench/contrib/telemetry/browser/telemetry.contribution';
-
+import 'vs/workbench/contrib/copy/browser/copy.contribution';
 // Preferences
 import 'vs/workbench/contrib/preferences/browser/preferences.contribution';
 import 'vs/workbench/contrib/preferences/browser/keybindingsEditorContribution';
@@ -177,7 +177,7 @@ import 'vs/workbench/contrib/notebook/browser/notebook.contribution';
 import 'vs/workbench/contrib/chat/browser/chat.contribution';
 import 'vs/workbench/contrib/inlineChat/browser/inlineChat.contribution';
 
-// Interactive
+// Interactive⮞
 import 'vs/workbench/contrib/interactive/browser/interactive.contribution';
 
 // Testing
@@ -369,5 +369,6 @@ import 'vs/workbench/contrib/accessibility/browser/accessibility.contribution';
 
 // Share
 import 'vs/workbench/contrib/share/browser/share.contribution';
+
 
 //#endregion
