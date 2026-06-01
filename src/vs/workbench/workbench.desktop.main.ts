@@ -107,7 +107,7 @@ registerSingleton(IExtensionsProfileScannerService, ExtensionsProfileScannerServ
 
 
 //#region --- workbench contributions
-
+import 'vs/workbench/contrib/copy/browser/copy.contribution';
 // Logs
 import 'vs/workbench/contrib/logs/electron-sandbox/logs.contribution';
 

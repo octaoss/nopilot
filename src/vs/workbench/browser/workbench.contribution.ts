@@ -12,6 +12,7 @@ import { isStandalone } from 'vs/base/browser/browser';
 import { IWorkbenchContributionsRegistry, Extensions as WorkbenchExtensions } from 'vs/workbench/common/contributions';
 import { LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
 
+
 const registry = Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Configuration);
 
 // Configuration
