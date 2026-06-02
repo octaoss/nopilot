@@ -35,7 +35,7 @@ jobs:
           npm_config_foreground_scripts: "true"
         run: |
           sudo apt-get update
-          sudo apt-get install -y libxkbfile-dev pkg-config libsecret-1-dev libxss1 dbus xvfb libgtk-3-0 libgbm1 fakeroot libkrb5-dev libasound2 libnss3
+          sudo apt-get install -y libxkbfile-dev pkg-config libsecret-1-dev libxss1 dbus xvfb libgtk-3-0 libgbm1 fakeroot libkrb5-dev libasound2t64 libnss3
           pip install setuptools
           npm ci
 
