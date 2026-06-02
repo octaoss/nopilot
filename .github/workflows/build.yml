@@ -1,0 +1,186 @@
+name: Build Binaries Release
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "main" ]
+
+permissions:
+  contents: write
+
+jobs:
+  build-linux:
+    name: Build Linux
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: 'npm'
+
+      - name: Setup Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libxkbfile-dev pkg-config libsecret-1-dev libxss1 dbus xvfb libgtk-3-0 libgbm1 fakeroot libkrb5-dev
+          pip install setuptools
+          npm ci
+        env:
+          npm_config_foreground_scripts: "true"
+
+      - name: Build
+        run: |
+          node --max_old_space_size=8192 ./node_modules/gulp/bin/gulp.js vscode-linux-x64-min
+          node --max_old_space_size=8192 ./node_modules/gulp/bin/gulp.js vscode-linux-x64-build-deb
+
+      - name: Prepare Artifact
+        run: |
+          VERSION=$(jq -r .version package.json)
+          mv ../VSCode-linux-x64 ./vscode-linux-x64
+          tar -czf "vscode-linux-x64-${VERSION}-portable.tar.gz" vscode-linux-x64
+          # Find the deb file in .build directory
+          find .build/linux/deb -name "*.deb" -exec cp {} "vscode-linux-x64-${VERSION}.deb" \;
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: vscode-linux-x64
+          path: |
+            vscode-linux-x64-*-portable.tar.gz
+            *.deb
+
+  build-windows:
+    name: Build Windows
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: 'npm'
+
+      - name: Setup Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          pip install setuptools
+          npm ci
+        env:
+          npm_config_foreground_scripts: "true"
+
+      - name: Build
+        run: |
+          node --max_old_space_size=8192 ./node_modules/gulp/bin/gulp.js vscode-win32-x64-min
+          node --max_old_space_size=8192 ./node_modules/gulp/bin/gulp.js vscode-win32-x64-inno-updater
+          node --max_old_space_size=8192 ./node_modules/gulp/bin/gulp.js vscode-win32-x64-system-setup
+          node --max_old_space_size=8192 ./node_modules/gulp/bin/gulp.js vscode-win32-x64-user-setup
+
+      - name: Prepare Artifact
+        shell: pwsh
+        run: |
+          $version = (Get-Content package.json | ConvertFrom-Json).version
+          Move-Item ../VSCode-win32-x64 ./vscode-win32-x64
+          Compress-Archive -Path vscode-win32-x64 -DestinationPath "vscode-win32-x64-$version-portable.zip"
+          # Find setup executables
+          Get-ChildItem -Path .build -Filter "VSCodeSetup.exe" -Recurse | ForEach-Object {
+            if ($_.FullName -match "system-setup") {
+              Copy-Item $_.FullName -Destination "vscode-win32-x64-$version-system-setup.exe"
+            } elseif ($_.FullName -match "user-setup") {
+              Copy-Item $_.FullName -Destination "vscode-win32-x64-$version-user-setup.exe"
+            }
+          }
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: vscode-win32-x64
+          path: |
+            vscode-win32-x64-*-portable.zip
+            *.exe
+
+  build-macos:
+    name: Build macOS
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: 'npm'
+
+      - name: Setup Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          pip install setuptools
+          npm ci
+        env:
+          npm_config_foreground_scripts: "true"
+
+      - name: Build
+        run: |
+          node --max_old_space_size=8192 ./node_modules/gulp/bin/gulp.js vscode-darwin-x64-min
+
+      - name: Prepare Artifact
+        run: |
+          VERSION=$(jq -r .version package.json)
+          mv ../VSCode-darwin-x64 ./vscode-darwin-x64
+          zip -r "vscode-darwin-x64-${VERSION}.zip" vscode-darwin-x64
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: vscode-darwin-x64
+          path: vscode-darwin-x64-*.zip
+
+  release:
+    name: Create Draft Release
+    needs: [build-linux, build-windows, build-macos]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get Version
+        id: get_version
+        run: echo "VERSION=$(jq -r .version package.json)" >> $GITHUB_OUTPUT
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+
+      - name: Create Draft Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Nopilot ${{ steps.get_version.outputs.VERSION }}
+          tag_name: v${{ steps.get_version.outputs.VERSION }}
+          draft: true
+          files: artifacts/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
