@@ -1,9 +1,10 @@
-import { Registry } from '../../../../platform/registry/common/platform.js';
-import { LifecyclePhase } from '../../../..//workbench/services/lifecycle/common/lifecycle.js';
-import { Extensions, IWorkbenchContributionsRegistry } from '../../../../workbench/common/contributions.js';
-import { copyStatus } from './copyStatus.js';
+import { Registry } from 'vs/platform/registry/common/platform';
+import { LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { Extensions, IWorkbenchContributionsRegistry } from 'vs/workbench/common/contributions';
+import { CopyStatus } from './copyStatus.js';
 
 
 Registry.as<IWorkbenchContributionsRegistry>(Extensions.Workbench).registerWorkbenchContribution(
-	copyStatus, LifecyclePhase.Restored
+	CopyStatus, LifecyclePhase.Restored
 );
+
