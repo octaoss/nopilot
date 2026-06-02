@@ -122,8 +122,7 @@
 		{
 			"scope": "markup.italic",
 			"settings": {
-				"fontStyle": "italic",
-				"foreground": "#800080"
+				"fontStyle": "italic"
 			}
 		},
 		{
@@ -430,8 +429,7 @@
 				"support.constant.math",
 				"support.constant.dom",
 				"support.constant.json",
-				"entity.other.inherited-class",
-				"punctuation.separator.namespace.ruby"
+				"entity.other.inherited-class"
 			],
 			"settings": {
 				"foreground": "#185E73"
@@ -570,8 +568,6 @@
 		}
 	],
 	"colors": {
-		"actionBar.toggledBackground": "#dddddd",
-		"statusBarItem.remoteBackground": "#FFFFFF",
-		"statusBarItem.remoteForeground": "#000000"
+		"actionBar.toggledBackground": "#dddddd"
 	}
 }

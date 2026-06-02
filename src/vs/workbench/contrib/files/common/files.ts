@@ -3,25 +3,25 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
-import { IEditorOptions } from 'vs/editor/common/config/editorOptions';
-import { IWorkbenchEditorConfiguration, IEditorIdentifier, EditorResourceAccessor, SideBySideEditor } from 'vs/workbench/common/editor';
-import { EditorInput } from 'vs/workbench/common/editor/editorInput';
-import { IFilesConfiguration as PlatformIFilesConfiguration, FileChangeType, IFileService } from 'vs/platform/files/common/files';
-import { ContextKeyExpr, RawContextKey } from 'vs/platform/contextkey/common/contextkey';
-import { ITextModelContentProvider } from 'vs/editor/common/services/resolverService';
-import { Disposable, MutableDisposable } from 'vs/base/common/lifecycle';
-import { ITextModel } from 'vs/editor/common/model';
-import { IModelService } from 'vs/editor/common/services/model';
-import { ILanguageService, ILanguageSelection } from 'vs/editor/common/languages/language';
-import { ITextFileService } from 'vs/workbench/services/textfile/common/textfiles';
-import { InputFocusedContextKey } from 'vs/platform/contextkey/common/contextkeys';
-import { IEditorGroup } from 'vs/workbench/services/editor/common/editorGroupsService';
-import { once } from 'vs/base/common/functional';
-import { ITextEditorOptions } from 'vs/platform/editor/common/editor';
-import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { localize } from 'vs/nls';
-import { IExpression } from 'vs/base/common/glob';
+import { URI } from '../../../../base/common/uri.js';
+import { IEditorOptions } from '../../../../editor/common/config/editorOptions.js';
+import { IWorkbenchEditorConfiguration, IEditorIdentifier, EditorResourceAccessor, SideBySideEditor } from '../../../common/editor.js';
+import { EditorInput } from '../../../common/editor/editorInput.js';
+import { IFilesConfiguration as PlatformIFilesConfiguration, FileChangeType, IFileService } from '../../../../platform/files/common/files.js';
+import { ContextKeyExpr, RawContextKey } from '../../../../platform/contextkey/common/contextkey.js';
+import { ITextModelContentProvider } from '../../../../editor/common/services/resolverService.js';
+import { Disposable, DisposableStore, MutableDisposable } from '../../../../base/common/lifecycle.js';
+import { ITextModel } from '../../../../editor/common/model.js';
+import { IModelService } from '../../../../editor/common/services/model.js';
+import { ILanguageService, ILanguageSelection } from '../../../../editor/common/languages/language.js';
+import { ITextFileService } from '../../../services/textfile/common/textfiles.js';
+import { InputFocusedContextKey } from '../../../../platform/contextkey/common/contextkeys.js';
+import { IEditorGroup } from '../../../services/editor/common/editorGroupsService.js';
+import { Event } from '../../../../base/common/event.js';
+import { ITextEditorOptions } from '../../../../platform/editor/common/editor.js';
+import { IEditorService } from '../../../services/editor/common/editorService.js';
+import { localize } from '../../../../nls.js';
+import { IExpression } from '../../../../base/common/glob.js';
 
 /**
  * Explorer viewlet id.
@@ -97,6 +97,7 @@ export interface IFilesConfiguration extends PlatformIFilesConfiguration, IWorkb
 		expandSingleFolderWorkspaces: boolean;
 		sortOrder: SortOrder;
 		sortOrderLexicographicOptions: LexicographicOptions;
+		sortOrderReverse: boolean;
 		decorations: {
 			colors: boolean;
 			badges: boolean;
@@ -108,6 +109,7 @@ export interface IFilesConfiguration extends PlatformIFilesConfiguration, IWorkb
 			expand: boolean;
 			patterns: { [parent: string]: string };
 		};
+		autoOpenDroppedFile: boolean;
 	};
 	editor: IEditorOptions;
 }
@@ -142,6 +144,7 @@ export const enum LexicographicOptions {
 export interface ISortOrderConfiguration {
 	sortOrder: SortOrder;
 	lexicographicOptions: LexicographicOptions;
+	reverse: boolean;
 }
 
 export class TextFileContentProvider extends Disposable implements ITextModelContentProvider {
@@ -171,6 +174,7 @@ export class TextFileContentProvider extends Disposable implements ITextModelCon
 
 	private static textFileToResource(resource: URI): URI {
 		const { scheme, query } = JSON.parse(resource.query);
+
 		return resource.with({ scheme, query });
 	}
 
@@ -188,14 +192,16 @@ export class TextFileContentProvider extends Disposable implements ITextModelCon
 
 		// Make sure to keep contents up to date when it changes
 		if (!this.fileWatcherDisposable.value) {
-			this.fileWatcherDisposable.value = this.fileService.onDidFilesChange(changes => {
+			const disposables = new DisposableStore();
+			this.fileWatcherDisposable.value = disposables;
+			disposables.add(this.fileService.onDidFilesChange(changes => {
 				if (changes.contains(savedFileResource, FileChangeType.UPDATED)) {
 					this.resolveEditorModel(resource, false /* do not create if missing */); // update model when resource changes
 				}
-			});
+			}));
 
 			if (codeEditorModel) {
-				once(codeEditorModel.onWillDispose)(() => this.fileWatcherDisposable.clear());
+				disposables.add(Event.once(codeEditorModel.onWillDispose)(() => this.fileWatcherDisposable.clear()));
 			}
 		}
 

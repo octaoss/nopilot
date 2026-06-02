@@ -3,21 +3,22 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IJSONSchema } from 'vs/base/common/jsonSchema';
-import { KeyCode, KeyMod } from 'vs/base/common/keyCodes';
-import { escapeRegExpCharacters } from 'vs/base/common/strings';
-import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
-import { EditorAction, EditorCommand, ServicesAccessor } from 'vs/editor/browser/editorExtensions';
-import { EditorContextKeys } from 'vs/editor/common/editorContextKeys';
-import { autoFixCommandId, codeActionCommandId, fixAllCommandId, organizeImportsCommandId, quickFixCommandId, refactorCommandId, sourceActionCommandId } from 'vs/editor/contrib/codeAction/browser/codeAction';
-import * as nls from 'vs/nls';
-import { ContextKeyExpr } from 'vs/platform/contextkey/common/contextkey';
-import { KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
-import { CodeActionAutoApply, CodeActionCommandArgs, CodeActionFilter, CodeActionKind, CodeActionTriggerSource } from '../common/types';
-import { CodeActionController } from './codeActionController';
-import { SUPPORTED_CODE_ACTIONS } from './codeActionModel';
+import { HierarchicalKind } from '../../../../base/common/hierarchicalKind.js';
+import { IJSONSchema } from '../../../../base/common/jsonSchema.js';
+import { KeyCode, KeyMod } from '../../../../base/common/keyCodes.js';
+import { escapeRegExpCharacters } from '../../../../base/common/strings.js';
+import { ICodeEditor } from '../../../browser/editorBrowser.js';
+import { EditorAction, EditorCommand, ServicesAccessor } from '../../../browser/editorExtensions.js';
+import { EditorContextKeys } from '../../../common/editorContextKeys.js';
+import { autoFixCommandId, codeActionCommandId, fixAllCommandId, organizeImportsCommandId, quickFixCommandId, refactorCommandId, sourceActionCommandId } from './codeAction.js';
+import * as nls from '../../../../nls.js';
+import { ContextKeyExpr } from '../../../../platform/contextkey/common/contextkey.js';
+import { KeybindingWeight } from '../../../../platform/keybinding/common/keybindingsRegistry.js';
+import { CodeActionAutoApply, CodeActionCommandArgs, CodeActionFilter, CodeActionKind, CodeActionTriggerSource } from '../common/types.js';
+import { CodeActionController } from './codeActionController.js';
+import { SUPPORTED_CODE_ACTIONS } from './codeActionModel.js';
 
-function contextKeyForSupportedActions(kind: CodeActionKind) {
+function contextKeyForSupportedActions(kind: HierarchicalKind) {
 	return ContextKeyExpr.regex(
 		SUPPORTED_CODE_ACTIONS.keys()[0],
 		new RegExp('(\\s|^)' + escapeRegExpCharacters(kind.value) + '\\b'));
@@ -90,7 +91,7 @@ export class CodeActionCommand extends EditorCommand {
 		super({
 			id: codeActionCommandId,
 			precondition: ContextKeyExpr.and(EditorContextKeys.writable, EditorContextKeys.hasCodeActionsProvider),
-			description: {
+			metadata: {
 				description: 'Trigger a code action',
 				args: [{ name: 'args', schema: argsSchema, }]
 			}
@@ -99,7 +100,7 @@ export class CodeActionCommand extends EditorCommand {
 
 	public runEditorCommand(_accessor: ServicesAccessor, editor: ICodeEditor, userArgs: any) {
 		const args = CodeActionCommandArgs.fromUser(userArgs, {
-			kind: CodeActionKind.Empty,
+			kind: HierarchicalKind.Empty,
 			apply: CodeActionAutoApply.IfSingle,
 		});
 		return triggerCodeActionsForEditorSelection(editor,
@@ -143,7 +144,7 @@ export class RefactorAction extends EditorAction {
 					EditorContextKeys.writable,
 					contextKeyForSupportedActions(CodeActionKind.Refactor)),
 			},
-			description: {
+			metadata: {
 				description: 'Refactor...',
 				args: [{ name: 'args', schema: argsSchema }]
 			}
@@ -164,7 +165,7 @@ export class RefactorAction extends EditorAction {
 					? nls.localize('editor.action.refactor.noneMessage.preferred', "No preferred refactorings available")
 					: nls.localize('editor.action.refactor.noneMessage', "No refactorings available"),
 			{
-				include: CodeActionKind.Refactor.contains(args.kind) ? args.kind : CodeActionKind.None,
+				include: CodeActionKind.Refactor.contains(args.kind) ? args.kind : HierarchicalKind.None,
 				onlyIncludePreferredActions: args.preferred
 			},
 			args.apply, CodeActionTriggerSource.Refactor);
@@ -186,7 +187,7 @@ export class SourceAction extends EditorAction {
 					EditorContextKeys.writable,
 					contextKeyForSupportedActions(CodeActionKind.Source)),
 			},
-			description: {
+			metadata: {
 				description: 'Source Action...',
 				args: [{ name: 'args', schema: argsSchema }]
 			}
@@ -207,7 +208,7 @@ export class SourceAction extends EditorAction {
 					? nls.localize('editor.action.source.noneMessage.preferred', "No preferred source actions available")
 					: nls.localize('editor.action.source.noneMessage', "No source actions available"),
 			{
-				include: CodeActionKind.Source.contains(args.kind) ? args.kind : CodeActionKind.None,
+				include: CodeActionKind.Source.contains(args.kind) ? args.kind : HierarchicalKind.None,
 				includeSourceActions: true,
 				onlyIncludePreferredActions: args.preferred,
 			},

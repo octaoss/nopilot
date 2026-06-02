@@ -1,35 +1,33 @@
 {
-	"nameShort": "nopilot",
-	"nameLong": "nopilot",
+	"nameShort": "Nopilot",
+	"nameLong": "Nopilot",
 	"applicationName": "nopilot",
 	"dataFolderName": ".nopilot",
-	"win32MutexName": "nopilot",
+	"win32MutexName": "nopilotoss",
 	"licenseName": "MIT",
 	"licenseUrl": "https://github.com/microsoft/vscode/blob/main/LICENSE.txt",
 	"serverLicenseUrl": "https://github.com/microsoft/vscode/blob/main/LICENSE.txt",
 	"serverGreeting": [],
 	"serverLicense": [],
 	"serverLicensePrompt": "",
-	"serverApplicationName": "nopilot-server",
-	"serverDataFolderName": ".nopilot-server",
-	"tunnelApplicationName": "nopilot-tunnel",
-	"win32DirName": "nopilot",
-	"win32NameVersion": "nopilot",
-	"win32RegValueName": "nopilot",
-	"win32AppId": "{E34003BB-9E10-4501-8C11-BE3FAA83F23F}",
-	"win32x64AppId": "{D77B7E06-80BA-4137-BCF4-654B95CCEBC5}",
-	"win32arm64AppId": "{D1ACE434-89C5-48D1-88D3-E2991DF85475}",
-	"win32UserAppId": "{C6065F05-9603-4FC4-8101-B9781A25D88E}",
-	"win32x64UserAppId": "{CC6B787D-37A0-49E8-AE24-8559A032BE0C}",
-	"win32arm64UserAppId": "{3AEBF0C8-F733-4AD4-BADE-FDB816D53D7B}",
-	"win32AppUserModelId": "nopilot.editor",
-	"win32ShellNameShort": "n&opilot",
-	"win32TunnelServiceMutex": "nopilot-tunnelservice",
-	"win32TunnelMutex": "nopilot-tunnel",
-	"darwinBundleIdentifier": "com.nopilot.editor",
-	"linuxIconName": "vscode",
+	"serverApplicationName": "code-server-oss",
+	"serverDataFolderName": ".vscode-server-oss",
+	"tunnelApplicationName": "code-tunnel-oss",
+	"win32DirName": "Octanio Nopilot",
+	"win32NameVersion": "Octanio Nopilot",
+	"win32RegValueName": "Nopilot",
+	"win32x64AppId": "{{D77B7E06-80BA-4137-BCF4-654B95CCEBC5}",
+	"win32arm64AppId": "{{D1ACE434-89C5-48D1-88D3-E2991DF85475}",
+	"win32x64UserAppId": "{{CC6B787D-37A0-49E8-AE24-8559A032BE0C}",
+	"win32arm64UserAppId": "{{3AEBF0C8-F733-4AD4-BADE-FDB816D53D7B}",
+	"win32AppUserModelId": "Microsoft.CodeOSS",
+	"win32ShellNameShort": "N&opilot",
+	"win32TunnelServiceMutex": "vscodeoss-tunnelservice",
+	"win32TunnelMutex": "vscodeoss-tunnel",
+	"darwinBundleIdentifier": "com.visualstudio.nopilot.oss",
+	"linuxIconName": "code",
 	"licenseFileName": "LICENSE.txt",
-	"reportIssueUrl": "",
+	"reportIssueUrl": "https://github.com/microsoft/vscode/issues/new",
 	"nodejsRepository": "https://nodejs.org",
 	"urlProtocol": "nopilot",
 	"webviewContentExternalBaseUrlTemplate": "https://{{uuid}}.vscode-cdn.net/insider/ef65ac1ba57f57f2a3961bfe94aa20481caca4c6/out/vs/workbench/contrib/webview/browser/pre/",
@@ -83,7 +81,36 @@
 				"publisherId": "miguelsolorio",
 				"publisherDisplayName": "Miguel Solorio"
 			}
-		}
+		},
+		{
+			"name" :"ms-toolsai.jupyter",
+			"version" : "2025.9.1",
+			"repo" : "https://github.com/Microsoft/vscode-jupyter",
+			"metadata": {
+			"id" :"ms-toolsai.jupyter",
+				"publisherId" : "ms-toolsai",
+				"publisherDisplayName": "Jupyter"
+			}
+		},
+		{
+    "name": "ms-toolsai.jupyter-keymap",
+    "version": "1.1.2",
+    "repo": "https://github.com/Microsoft/vscode-jupyter-keymap",
+    "metadata": {
+        "id": "ms-toolsai.jupyter-keymap",
+        "publisherId": "ms-toolsai",
+        "publisherDisplayName": "Jupyter"
+    }
+},{
+    "name": "f-mdsa.monokai-darkplus",
+    "version": "1.0.4",
+    "repo": "https://github.com/filipeyay/monokai-darkplus",
+    "metadata": {
+        "id": "f-mdsa.monokai-darkplus",
+        "publisherId": "f-mdsa",
+        "publisherDisplayName": "f-mdsa"
+    }
+}
 	],
 	"extensionsGallery": {
 		"serviceUrl": "https://customvsx-nonai.oktanio.workers.dev/vscode/gallery",
