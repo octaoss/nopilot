@@ -1,6 +1,6 @@
-import { Registry } from 'vs/platform/registry/common/platform';
-import { LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
-import { Extensions, IWorkbenchContributionsRegistry } from 'vs/workbench/common/contributions';
+import { Registry } from '../../../../platform/registry/common/platform.js';
+import { LifecyclePhase } from '../../../services/lifecycle/common/lifecycle.js';
+import { Extensions, IWorkbenchContributionsRegistry } from '../../../common/contributions.js';
 import { CopyStatus } from './copyStatus.js';
 
 

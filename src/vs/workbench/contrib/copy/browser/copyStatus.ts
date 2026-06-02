@@ -1,5 +1,5 @@
-import { Disposable } from 'vs/base/common/lifecycle';
-import { IStatusbarService, StatusbarAlignment } from 'vs/workbench/services/statusbar/browser/statusbar';
+import { Disposable } from '../../../../base/common/lifecycle.js';
+import { IStatusbarService, StatusbarAlignment } from '../../../services/statusbar/browser/statusbar.js';
 
 
 export class CopyStatus extends Disposable {
