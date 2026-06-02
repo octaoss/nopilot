@@ -8,6 +8,9 @@ on:
 permissions:
   contents: write
 
+env:
+  NODE_OPTIONS: "--max-old-space-size=8192"
+
 jobs:
   build-linux:
     name: Build Linux
@@ -32,14 +35,17 @@ jobs:
           npm_config_foreground_scripts: "true"
         run: |
           sudo apt-get update
-          sudo apt-get install -y libxkbfile-dev pkg-config libsecret-1-dev libxss1 dbus xvfb libgtk-3-0 libgbm1 fakeroot libkrb5-dev
+          sudo apt-get install -y libxkbfile-dev pkg-config libsecret-1-dev libxss1 dbus xvfb libgtk-3-0 libgbm1 fakeroot libkrb5-dev libasound2 libnss3
           pip install setuptools
           npm ci
 
+      - name: Download Built-in Extensions
+        run: npm run download-builtin-extensions
+
       - name: Build
         run: |
-          node --max_old_space_size=8192 ./node_modules/gulp/bin/gulp.js vscode-linux-x64-min
-          node --max_old_space_size=8192 ./node_modules/gulp/bin/gulp.js vscode-linux-x64-build-deb
+          node ./node_modules/gulp/bin/gulp.js vscode-linux-x64-min
+          node ./node_modules/gulp/bin/gulp.js vscode-linux-x64-build-deb
 
       - name: Prepare Artifact
         run: |
@@ -81,12 +87,15 @@ jobs:
           pip install setuptools
           npm ci
 
+      - name: Download Built-in Extensions
+        run: npm run download-builtin-extensions
+
       - name: Build
         run: |
-          node --max_old_space_size=8192 ./node_modules/gulp/bin/gulp.js vscode-win32-x64-min
-          node --max_old_space_size=8192 ./node_modules/gulp/bin/gulp.js vscode-win32-x64-inno-updater
-          node --max_old_space_size=8192 ./node_modules/gulp/bin/gulp.js vscode-win32-x64-system-setup
-          node --max_old_space_size=8192 ./node_modules/gulp/bin/gulp.js vscode-win32-x64-user-setup
+          node ./node_modules/gulp/bin/gulp.js vscode-win32-x64-min
+          node ./node_modules/gulp/bin/gulp.js vscode-win32-x64-inno-updater
+          node ./node_modules/gulp/bin/gulp.js vscode-win32-x64-system-setup
+          node ./node_modules/gulp/bin/gulp.js vscode-win32-x64-user-setup
 
       - name: Prepare Artifact
         shell: pwsh
@@ -135,9 +144,12 @@ jobs:
           pip install setuptools
           npm ci
 
+      - name: Download Built-in Extensions
+        run: npm run download-builtin-extensions
+
       - name: Build
         run: |
-          node --max_old_space_size=8192 ./node_modules/gulp/bin/gulp.js vscode-darwin-x64-min
+          node ./node_modules/gulp/bin/gulp.js vscode-darwin-x64-min
 
       - name: Prepare Artifact
         run: |
