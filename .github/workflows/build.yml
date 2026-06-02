@@ -29,13 +29,12 @@ jobs:
       - name: Install dependencies
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          npm_config_foreground_scripts: "true"
         run: |
           sudo apt-get update
           sudo apt-get install -y libxkbfile-dev pkg-config libsecret-1-dev libxss1 dbus xvfb libgtk-3-0 libgbm1 fakeroot libkrb5-dev
           pip install setuptools
           npm ci
-        env:
-          npm_config_foreground_scripts: "true"
 
       - name: Build
         run: |
@@ -47,7 +46,6 @@ jobs:
           VERSION=$(jq -r .version package.json)
           mv ../VSCode-linux-x64 ./vscode-linux-x64
           tar -czf "vscode-linux-x64-${VERSION}-portable.tar.gz" vscode-linux-x64
-          # Find the deb file in .build directory
           find .build/linux/deb -name "*.deb" -exec cp {} "vscode-linux-x64-${VERSION}.deb" \;
 
       - name: Upload Artifact
@@ -78,11 +76,10 @@ jobs:
       - name: Install dependencies
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          npm_config_foreground_scripts: "true"
         run: |
           pip install setuptools
           npm ci
-        env:
-          npm_config_foreground_scripts: "true"
 
       - name: Build
         run: |
@@ -97,7 +94,6 @@ jobs:
           $version = (Get-Content package.json | ConvertFrom-Json).version
           Move-Item ../VSCode-win32-x64 ./vscode-win32-x64
           Compress-Archive -Path vscode-win32-x64 -DestinationPath "vscode-win32-x64-$version-portable.zip"
-          # Find setup executables
           Get-ChildItem -Path .build -Filter "VSCodeSetup.exe" -Recurse | ForEach-Object {
             if ($_.FullName -match "system-setup") {
               Copy-Item $_.FullName -Destination "vscode-win32-x64-$version-system-setup.exe"
@@ -134,11 +130,10 @@ jobs:
       - name: Install dependencies
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          npm_config_foreground_scripts: "true"
         run: |
           pip install setuptools
           npm ci
-        env:
-          npm_config_foreground_scripts: "true"
 
       - name: Build
         run: |
