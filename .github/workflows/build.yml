@@ -56,6 +56,9 @@ jobs:
       - name: Download Built-in Extensions
         run: npm run download-builtin-extensions
 
+      - name: Download Built-in Extensions
+        run: npm run download-builtin-extensions
+
       - name: Build
         run: |
           node ./node_modules/gulp/bin/gulp.js vscode-linux-x64-min
