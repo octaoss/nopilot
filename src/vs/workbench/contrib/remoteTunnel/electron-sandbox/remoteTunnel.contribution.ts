@@ -788,6 +788,25 @@ export class RemoteTunnelWorkbenchContribution extends Disposable implements IWo
 }
 
 
+
+Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Configuration).registerDefaultConfigurations([
+	{
+		overrides: {
+			'workbench.iconTheme': 'vscode-jetbrains-icon-theme-2023-dark',
+			"workbench.colorTheme": "Monokai Dark+ Modern",
+			'telemetry.telemetryLevel': 'off',
+			"workbench.productIconTheme": "fluent-icons",
+			'extensions.ignoreRecommendations': true,
+			'workbench.startupEditor': 'none',
+			"window.titleBarStyle": "custom",
+			'window.commandCenter': false,
+			'chat.commandCenter.enabled': false,
+			"window.title": "${dirty}${activeEditorShort} — Nopilot © Octanio",
+		}
+	}
+]);
+
+
 const workbenchRegistry = Registry.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench);
 workbenchRegistry.registerWorkbenchContribution(RemoteTunnelWorkbenchContribution, LifecyclePhase.Restored);
 
