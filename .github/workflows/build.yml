@@ -70,7 +70,7 @@ jobs:
           # Tarball
           mv ../VSCode-linux-x64 ./octanopilot-linux-x64
           tar -czf "release-artifacts/octanopilot-linux-x64-${VERSION}.tar.gz" octanopilot-linux-x64
-          # Packages
+          # Ambil .deb dan .rpm jika ada (find lebih aman)
           find .build/linux/deb -name "*.deb" -exec cp {} release-artifacts/ \;
           find .build/linux/rpm -name "*.rpm" -exec cp {} release-artifacts/ \;
 
@@ -110,6 +110,7 @@ jobs:
 
       - name: Build
         run: |
+          # Patch pada Gulpfile sudah menangani rcedit, jadi kita bisa pakai task standar
           node ./node_modules/gulp/bin/gulp.js vscode-win32-x64-min
 
       - name: Prepare Artifact

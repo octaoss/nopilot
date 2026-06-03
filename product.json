@@ -76,7 +76,7 @@
 		{
 			"name": "miguelsolorio.fluent-icons",
 			"version": "0.0.19",
-			"repo": "httpm://github.com/misolori/vscode-fluent-icons",
+			"repo": "https://github.com/misolori/vscode-fluent-icons",
 			"metadata": {
 				"id": "miguelsolorio.fluent-icons",
 				"publisherId": "miguelsolorio",

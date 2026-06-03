@@ -447,20 +447,17 @@ function patchWin32DependenciesTask(destinationFolderName) {
 	const cwd = path.join(path.dirname(root), destinationFolderName);
 
 	return async () => {
-		const deps = await glob('**/*.node', {
-			cwd,
-			ignore: [
-				'extensions/node_modules/@parcel/watcher/**',
-				'**/node_modules/**/prebuilds/linux-x64/**',
-				'**/node_modules/**/prebuilds/linux-arm64/**',
-				'**/node_modules/**/prebuilds/linux-armhf/**',
-				'**/node_modules/**/prebuilds/darwin-x64/**',
-				'**/node_modules/**/prebuilds/darwin-arm64/**'
-			]
-		});
+		let deps = await glob('**/*.node', { cwd });
 		const packageJson = JSON.parse(await fs.promises.readFile(path.join(cwd, 'resources', 'app', 'package.json'), 'utf8'));
 		const product = JSON.parse(await fs.promises.readFile(path.join(cwd, 'resources', 'app', 'product.json'), 'utf8'));
 		const baseVersion = packageJson.version.replace(/-.*$/, '');
+
+		// Filter out non-Windows native modules and parcel watcher
+		deps = deps.filter(dep => {
+			const isParcelWatcher = dep.includes('extensions/node_modules/@parcel/watcher');
+			const isNonWindowsPrebuild = dep.includes('prebuilds/linux-') || dep.includes('prebuilds/darwin-');
+			return !isParcelWatcher && !isNonWindowsPrebuild;
+		});
 
 		await Promise.all(deps.map(async dep => {
 			const basename = path.basename(dep);
