@@ -44,7 +44,8 @@ jobs:
             fakeroot \
             libkrb5-dev \
             libasound2t64 \
-            libnss3
+            libnss3 \
+            rpm
           pip install setuptools
 
       - name: Install Node Dependencies
@@ -56,24 +57,30 @@ jobs:
       - name: Download Built-in Extensions
         run: npm run download-builtin-extensions
 
-      - name: Download Built-in Extensions
-        run: npm run download-builtin-extensions
-
       - name: Build
         run: |
           node ./node_modules/gulp/bin/gulp.js vscode-linux-x64-min
+          node ./node_modules/gulp/bin/gulp.js vscode-linux-x64-build-deb
+          node ./node_modules/gulp/bin/gulp.js vscode-linux-x64-build-rpm
 
       - name: Prepare Artifact
         run: |
           VERSION=$(jq -r .version package.json)
+          # Tarball
           mv ../VSCode-linux-x64 ./octanopilot-linux-x64
           tar -czf "octanopilot-linux-x64-${VERSION}.tar.gz" octanopilot-linux-x64
+          # Packages
+          find .build/linux/deb -name "*.deb" -exec cp {} ./ \;
+          find .build/linux/rpm -name "*.rpm" -exec cp {} ./ \;
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: linux-artifact
-          path: octanopilot-linux-x64-*.tar.gz
+          path: |
+            *.tar.gz
+            *.deb
+            *.rpm
 
   build-windows:
     name: Build Windows
@@ -105,7 +112,18 @@ jobs:
 
       - name: Build
         run: |
-          node ./node_modules/gulp/bin/gulp.js vscode-win32-x64-min
+          node ./node_modules/gulp/bin/gulp.js compile-build extensions-ci
+
+      - name: Cleanup Extension Native Modules
+        shell: pwsh
+        run: |
+          if (Test-Path .build/extensions) {
+            Get-ChildItem -Path .build/extensions -Include "linux-x64","linux-arm64","linux-armhf","darwin-x64","darwin-arm64" -Recurse | Remove-Item -Recurse -Force
+          }
+
+      - name: Finalize Build
+        run: |
+          node ./node_modules/gulp/bin/gulp.js minify-vscode vscode-win32-x64-min-ci
 
       - name: Prepare Artifact
         shell: pwsh
