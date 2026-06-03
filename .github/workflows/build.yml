@@ -66,21 +66,19 @@ jobs:
       - name: Prepare Artifact
         run: |
           VERSION=$(jq -r .version package.json)
+          mkdir -p release-artifacts
           # Tarball
           mv ../VSCode-linux-x64 ./octanopilot-linux-x64
-          tar -czf "octanopilot-linux-x64-${VERSION}.tar.gz" octanopilot-linux-x64
+          tar -czf "release-artifacts/octanopilot-linux-x64-${VERSION}.tar.gz" octanopilot-linux-x64
           # Packages
-          find .build/linux/deb -name "*.deb" -exec cp {} ./ \;
-          find .build/linux/rpm -name "*.rpm" -exec cp {} ./ \;
+          find .build/linux/deb -name "*.deb" -exec cp {} release-artifacts/ \;
+          find .build/linux/rpm -name "*.rpm" -exec cp {} release-artifacts/ \;
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: linux-artifact
-          path: |
-            *.tar.gz
-            *.deb
-            *.rpm
+          path: release-artifacts/*
 
   build-windows:
     name: Build Windows
@@ -112,18 +110,7 @@ jobs:
 
       - name: Build
         run: |
-          node ./node_modules/gulp/bin/gulp.js compile-build extensions-ci
-
-      - name: Cleanup Extension Native Modules
-        shell: pwsh
-        run: |
-          if (Test-Path .build/extensions) {
-            Get-ChildItem -Path .build/extensions -Include "linux-x64","linux-arm64","linux-armhf","darwin-x64","darwin-arm64" -Recurse | Remove-Item -Recurse -Force
-          }
-
-      - name: Finalize Build
-        run: |
-          node ./node_modules/gulp/bin/gulp.js minify-vscode vscode-win32-x64-min-ci
+          node ./node_modules/gulp/bin/gulp.js vscode-win32-x64-min
 
       - name: Prepare Artifact
         shell: pwsh
