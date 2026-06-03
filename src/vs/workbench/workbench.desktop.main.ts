@@ -170,12 +170,12 @@ import './contrib/remoteTunnel/electron-sandbox/remoteTunnel.contribution.js';
 
 /* Chat Disable Chat ( By Yohanes Oktanio )
  *
- */
+
 import './contrib/chat/electron-sandbox/chat.contribution.js';
 import './contrib/inlineChat/electron-sandbox/inlineChat.contribution.js';
 import './contrib/chat/common/chatInstallEntitlement.contribution.js';
 import './contrib/chat/browser/chatMovedView.contribution.js';
-
+*/
 // Encryption
 import './contrib/encryption/electron-sandbox/encryption.contribution.js';
 
@@ -183,7 +183,7 @@ import './contrib/encryption/electron-sandbox/encryption.contribution.js';
 import './contrib/emergencyAlert/electron-sandbox/emergencyAlert.contribution.js';
 
 // Octanio Copyright
-import './contrib/copy/browser/copy.contribution.js';
+//import './contrib/copy/browser/copy.contribution.js';
 
 //#endregion
 

@@ -798,7 +798,7 @@ Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Configuration).regis
 			'workbench.productIconTheme': 'fluent-icons',
 			'extensions.ignoreRecommendations': true,
 			'workbench.startupEditor': 'none',
-			// "window.titleBarStyle": "custom",
+			"window.titleBarStyle": "custom",
 			'window.commandCenter': false,
 			'chat.commandCenter.enabled': false,
 			'window.title': '${dirty}${activeEditorShort} — Nopilot © Octanio',
