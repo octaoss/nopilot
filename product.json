@@ -54,13 +54,13 @@
 			}
 		},
 		{
-			"name": "ritwickdey.LiveServer",
-			"version": "5.7.10",
-			"repo": "https://github.com/ritwickdey/vscode-live-server",
+			"name": "ms-vscode.live-server",
+			"version": "0.4.18",
+			"repo": "https://github.com/microsoft/vscode-livepreview",
 			"metadata": {
-				"id": "ritwickdey.LiveServer",
-				"publisherId": "ritwickdey",
-				"publisherDisplayName": "Ritwick Dey"
+				"id": "ms-vscode.live-server",
+				"publisherId": "ms-vscode",
+				"publisherDisplayName": "ms-vscode"
 			}
 		},
 		{
@@ -76,7 +76,7 @@
 		{
 			"name": "miguelsolorio.fluent-icons",
 			"version": "0.0.19",
-			"repo": "https://github.com/misolori/vscode-fluent-icons",
+			"repo": "httpm://github.com/misolori/vscode-fluent-icons",
 			"metadata": {
 				"id": "miguelsolorio.fluent-icons",
 				"publisherId": "miguelsolorio",

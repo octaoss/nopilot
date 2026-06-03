@@ -183,7 +183,7 @@ import './contrib/encryption/electron-sandbox/encryption.contribution.js';
 import './contrib/emergencyAlert/electron-sandbox/emergencyAlert.contribution.js';
 
 // Octanio Copyright
-//import './contrib/copy/browser/copy.contribution.js';
+import './contrib/copy/browser/copy.contribution.js';
 
 //#endregion
 
