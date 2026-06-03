@@ -1,8 +1,9 @@
-name: Build Octanopilot Linux
+name: Build Binaries Release
 
 on:
+  workflow_dispatch:
   push:
-    branches: [ "main", "test/1.95" ]
+    branches: [ "main" ]
 
 permissions:
   contents: write
@@ -12,7 +13,7 @@ env:
 
 jobs:
   build-linux:
-    name: Build Linux x64
+    name: Build Linux
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -55,20 +56,136 @@ jobs:
       - name: Download Built-in Extensions
         run: npm run download-builtin-extensions
 
-      - name: Build Minified VS Code
+      - name: Build
         run: |
-          # Build the core and extensions
           node ./node_modules/gulp/bin/gulp.js vscode-linux-x64-min
 
       - name: Prepare Artifact
         run: |
           VERSION=$(jq -r .version package.json)
-          # The build task places output in ../VSCode-linux-x64 (outside the repo root)
           mv ../VSCode-linux-x64 ./octanopilot-linux-x64
           tar -czf "octanopilot-linux-x64-${VERSION}.tar.gz" octanopilot-linux-x64
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: octanopilot-linux-x64
+          name: linux-artifact
           path: octanopilot-linux-x64-*.tar.gz
+
+  build-windows:
+    name: Build Windows
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: 'npm'
+
+      - name: Setup Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Dependencies
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          npm_config_foreground_scripts: "true"
+        run: |
+          pip install setuptools
+          npm ci
+
+      - name: Download Built-in Extensions
+        run: npm run download-builtin-extensions
+
+      - name: Build
+        run: |
+          node ./node_modules/gulp/bin/gulp.js vscode-win32-x64-min
+
+      - name: Prepare Artifact
+        shell: pwsh
+        run: |
+          $version = (Get-Content package.json | ConvertFrom-Json).version
+          Move-Item ../VSCode-win32-x64 ./octanopilot-win32-x64
+          Compress-Archive -Path octanopilot-win32-x64 -DestinationPath "octanopilot-win32-x64-$version.zip"
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-artifact
+          path: octanopilot-win32-x64-*.zip
+
+  build-macos:
+    name: Build macOS
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: 'npm'
+
+      - name: Setup Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Dependencies
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          npm_config_foreground_scripts: "true"
+        run: |
+          pip install setuptools
+          npm ci
+
+      - name: Download Built-in Extensions
+        run: npm run download-builtin-extensions
+
+      - name: Build
+        run: |
+          node ./node_modules/gulp/bin/gulp.js vscode-darwin-x64-min
+
+      - name: Prepare Artifact
+        run: |
+          VERSION=$(jq -r .version package.json)
+          mv ../VSCode-darwin-x64 ./octanopilot-darwin-x64
+          zip -r "octanopilot-darwin-x64-${VERSION}.zip" octanopilot-darwin-x64
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-artifact
+          path: octanopilot-darwin-x64-*.zip
+
+  release:
+    name: Create Draft Release
+    needs: [build-linux, build-windows, build-macos]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get Version
+        id: get_version
+        run: echo "VERSION=$(jq -r .version package.json)" >> $GITHUB_OUTPUT
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+
+      - name: Create Draft Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Nopilot ${{ steps.get_version.outputs.VERSION }}
+          tag_name: v${{ steps.get_version.outputs.VERSION }}
+          draft: true
+          files: artifacts/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
