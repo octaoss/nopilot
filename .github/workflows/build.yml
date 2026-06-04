@@ -59,7 +59,8 @@ jobs:
 
       - name: Build
         run: |
-          node ./node_modules/gulp/bin/gulp.js vscode-linux-x64-min
+          # Menggunakan vscode-linux-x64 (non-min) untuk kestabilan OSS
+          node ./node_modules/gulp/bin/gulp.js vscode-linux-x64
           node ./node_modules/gulp/bin/gulp.js vscode-linux-x64-build-deb
           node ./node_modules/gulp/bin/gulp.js vscode-linux-x64-build-rpm
 
@@ -67,10 +68,12 @@ jobs:
         run: |
           VERSION=$(jq -r .version package.json)
           mkdir -p release-artifacts
-          # Tarball
-          mv ../VSCode-linux-x64 ./octanopilot-linux-x64
-          tar -czf "release-artifacts/octanopilot-linux-x64-${VERSION}.tar.gz" octanopilot-linux-x64
-          # Ambil .deb dan .rpm jika ada (find lebih aman)
+          # Folder build Linux biasanya di ../VSCode-linux-x64
+          if [ -d "../VSCode-linux-x64" ]; then
+            mv ../VSCode-linux-x64 ./octanopilot-linux-x64
+            tar -czf "release-artifacts/octanopilot-linux-x64-${VERSION}.tar.gz" octanopilot-linux-x64
+          fi
+          # Ambil .deb dan .rpm
           find .build/linux/deb -name "*.deb" -exec cp {} release-artifacts/ \;
           find .build/linux/rpm -name "*.rpm" -exec cp {} release-artifacts/ \;
 
@@ -110,15 +113,18 @@ jobs:
 
       - name: Build
         run: |
-          # Patch pada Gulpfile sudah menangani rcedit, jadi kita bisa pakai task standar
-          node ./node_modules/gulp/bin/gulp.js vscode-win32-x64-min
+          # MENGGUNAKAN vscode-win32-x64 (NON-MIN) UNTUK MENGHINDARI BLACK SCREEN
+          # Patch pada Gulpfile sudah menangani rcedit untuk task non-min juga
+          node ./node_modules/gulp/bin/gulp.js vscode-win32-x64
 
       - name: Prepare Artifact
         shell: pwsh
         run: |
           $version = (Get-Content package.json | ConvertFrom-Json).version
-          Move-Item ../VSCode-win32-x64 ./octanopilot-win32-x64
-          Compress-Archive -Path octanopilot-win32-x64 -DestinationPath "octanopilot-win32-x64-$version.zip"
+          if (Test-Path ../VSCode-win32-x64) {
+            Move-Item ../VSCode-win32-x64 ./octanopilot-win32-x64
+            Compress-Archive -Path octanopilot-win32-x64 -DestinationPath "octanopilot-win32-x64-$version.zip"
+          }
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
@@ -156,13 +162,15 @@ jobs:
 
       - name: Build
         run: |
-          node ./node_modules/gulp/bin/gulp.js vscode-darwin-x64-min
+          node ./node_modules/gulp/bin/gulp.js vscode-darwin-x64
 
       - name: Prepare Artifact
         run: |
           VERSION=$(jq -r .version package.json)
-          mv ../VSCode-darwin-x64 ./octanopilot-darwin-x64
-          zip -r "octanopilot-darwin-x64-${VERSION}.zip" octanopilot-darwin-x64
+          if [ -d "../VSCode-darwin-x64" ]; then
+            mv ../VSCode-darwin-x64 ./octanopilot-darwin-x64
+            zip -r "octanopilot-darwin-x64-${VERSION}.zip" octanopilot-darwin-x64
+          fi
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
