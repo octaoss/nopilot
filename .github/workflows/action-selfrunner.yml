@@ -1,0 +1,88 @@
+name: Build Binaries Release (SELF HOSTED)
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+
+env:
+  NODE_OPTIONS: "--max-old-space-size=8096"
+
+jobs:
+  build-windows:
+    name: Build Windows
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: 'npm'
+
+      - name: Setup Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Dependencies
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          npm_config_foreground_scripts: "true"
+        run: |
+          pip install setuptools
+          npm ci
+
+      - name: Download Built-in Extensions
+        run: npm run download-builtin-extensions
+
+      - name: Build
+        run: |
+          # MENGGUNAKAN vscode-win32-x64 (NON-MIN) UNTUK MENGHINDARI BLACK SCREEN
+          # Patch pada Gulpfile sudah menangani rcedit untuk task non-min juga
+          node ./node_modules/gulp/bin/gulp.js vscode-win32-x64
+
+      - name: Prepare Artifact
+        shell: pwsh
+        run: |
+          $version = (Get-Content package.json | ConvertFrom-Json).version
+          if (Test-Path ../VSCode-win32-x64) {
+            Move-Item ../VSCode-win32-x64 ./octanopilot-win32-x64
+            Compress-Archive -Path octanopilot-win32-x64 -DestinationPath "octanopilot-win32-x64-$version.zip"
+          }
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-artifact
+          path: octanopilot-win32-x64-*.zip
+
+
+  release:
+    name: Create Draft Release
+    needs: [build-windows]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get Version
+        id: get_version
+        run: echo "VERSION=$(jq -r .version package.json)" >> $GITHUB_OUTPUT
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+
+      - name: Create Draft Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Nopilot ${{ steps.get_version.outputs.VERSION }}
+          tag_name: v${{ steps.get_version.outputs.VERSION }}
+          draft: true
+          files: artifacts/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

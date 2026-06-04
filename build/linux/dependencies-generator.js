@@ -6,6 +6,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getDependencies = getDependencies;
 const child_process_1 = require("child_process");
+const fs = require("fs");
 const path = require("path");
 const install_sysroot_1 = require("./debian/install-sysroot");
 const calculate_deps_1 = require("./debian/calculate-deps");
