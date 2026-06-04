@@ -1,4 +1,4 @@
-name: Build Binaries Release
+name: Build Binaries Release (SELF HOSTED)
 on:
   workflow_dispatch:
 permissions:
