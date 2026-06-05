@@ -454,27 +454,31 @@ function patchWin32DependenciesTask(destinationFolderName) {
 
 		// Filter out non-Windows native modules and parcel watcher
 		deps = deps.filter(dep => {
-			const isParcelWatcher = dep.includes('extensions/node_modules/@parcel/watcher');
-			const isNonWindowsPrebuild = dep.includes('prebuilds/linux-') || dep.includes('prebuilds/darwin-');
+			const normalizedDep = dep.replace(/\\/g, '/').toLowerCase();
+			const isParcelWatcher = normalizedDep.includes('node_modules/@parcel/watcher');
+			const isNonWindowsPrebuild = normalizedDep.includes('/prebuilds/linux') || normalizedDep.includes('/prebuilds/darwin') || normalizedDep.includes('musl.node') || normalizedDep.includes('-linux-') || normalizedDep.includes('-darwin-');
 			return !isParcelWatcher && !isNonWindowsPrebuild;
 		});
 
 		await Promise.all(deps.map(async dep => {
 			const basename = path.basename(dep);
-
-			await rcedit(path.join(cwd, dep), {
-				'file-version': baseVersion,
-				'version-string': {
-					'CompanyName': 'Microsoft Corporation',
-					'FileDescription': product.nameLong,
-					'FileVersion': packageJson.version,
-					'InternalName': basename,
-					'LegalCopyright': 'Copyright (C) 2022 Microsoft. All rights reserved',
-					'OriginalFilename': basename,
-					'ProductName': product.nameLong,
-					'ProductVersion': packageJson.version,
-				}
-			});
+			try {
+				await rcedit(path.join(cwd, dep), {
+					'file-version': baseVersion,
+					'version-string': {
+						'CompanyName': 'Microsoft Corporation',
+						'FileDescription': product.nameLong,
+						'FileVersion': packageJson.version,
+						'InternalName': basename,
+						'LegalCopyright': 'Copyright (C) 2024 Microsoft. All rights reserved',
+						'OriginalFilename': basename,
+						'ProductName': product.nameLong,
+						'ProductVersion': packageJson.version,
+					}
+				});
+			} catch (e) {
+				console.warn(`Could not patch ${dep}: ${e.message}`);
+			}
 		}));
 	};
 }
