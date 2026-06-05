@@ -59,8 +59,8 @@ jobs:
 
       - name: Build
         run: |
-          # Menggunakan vscode-linux-x64 (non-min) untuk kestabilan OSS
-          node ./node_modules/gulp/bin/gulp.js vscode-linux-x64
+          # Kembali ke versi MIN untuk kestabilan package final
+          node ./node_modules/gulp/bin/gulp.js vscode-linux-x64-min
           node ./node_modules/gulp/bin/gulp.js vscode-linux-x64-build-deb
           node ./node_modules/gulp/bin/gulp.js vscode-linux-x64-build-rpm
 
@@ -68,7 +68,7 @@ jobs:
         run: |
           VERSION=$(jq -r .version package.json)
           mkdir -p release-artifacts
-          # Folder build Linux biasanya di ../VSCode-linux-x64
+          # Folder minified tetap VSCode-linux-x64
           if [ -d "../VSCode-linux-x64" ]; then
             mv ../VSCode-linux-x64 ./octanopilot-linux-x64
             tar -czf "release-artifacts/octanopilot-linux-x64-${VERSION}.tar.gz" octanopilot-linux-x64
@@ -113,9 +113,8 @@ jobs:
 
       - name: Build
         run: |
-          # MENGGUNAKAN vscode-win32-x64 (NON-MIN) UNTUK MENGHINDARI BLACK SCREEN
-          # Patch pada Gulpfile sudah menangani rcedit untuk task non-min juga
-          node ./node_modules/gulp/bin/gulp.js vscode-win32-x64
+          # Kembali ke MIN namun dengan patch filtering rcedit di Gulpfile
+          node ./node_modules/gulp/bin/gulp.js vscode-win32-x64-min
 
       - name: Prepare Artifact
         shell: pwsh
@@ -162,7 +161,7 @@ jobs:
 
       - name: Build
         run: |
-          node ./node_modules/gulp/bin/gulp.js vscode-darwin-x64
+          node ./node_modules/gulp/bin/gulp.js vscode-darwin-x64-min
 
       - name: Prepare Artifact
         run: |
