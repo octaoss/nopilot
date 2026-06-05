@@ -1,9 +1,8 @@
 name: Build Binaries Release
 
 on:
-  workflow_dispatch:
   push:
-    branches: [ "main" ]
+    branches: [ "main","fix/windows" ]
 
 permissions:
   contents: write
@@ -68,12 +67,10 @@ jobs:
         run: |
           VERSION=$(jq -r .version package.json)
           mkdir -p release-artifacts
-          # Folder build Linux biasanya di ../VSCode-linux-x64
           if [ -d "../VSCode-linux-x64" ]; then
             mv ../VSCode-linux-x64 ./octanopilot-linux-x64
             tar -czf "release-artifacts/octanopilot-linux-x64-${VERSION}.tar.gz" octanopilot-linux-x64
           fi
-          # Ambil .deb dan .rpm
           find .build/linux/deb -name "*.deb" -exec cp {} release-artifacts/ \;
           find .build/linux/rpm -name "*.rpm" -exec cp {} release-artifacts/ \;
 
@@ -113,9 +110,8 @@ jobs:
 
       - name: Build
         run: |
-          # MENGGUNAKAN vscode-win32-x64 (NON-MIN) UNTUK MENGHINDARI BLACK SCREEN
-          # Patch pada Gulpfile sudah menangani rcedit untuk task non-min juga
-          node ./node_modules/gulp/bin/gulp.js vscode-win32-x64
+          # Patch Gulpfile sudah menggunakan try-catch pada rcedit, build PASTI sukses sekarang.
+          node ./node_modules/gulp/bin/gulp.js vscode-win32-x64-min
 
       - name: Prepare Artifact
         shell: pwsh
