@@ -482,6 +482,17 @@ function patchWin32DependenciesTask(destinationFolderName) {
 				console.warn(`Could not patch ${dep}: ${e.message}`);
 			}
 		}));
+
+		// Patch the main executable icon
+		const exes = await glob('*.exe', { cwd });
+		await Promise.all(exes.map(async exe => {
+			const exePath = path.join(cwd, exe);
+			try {
+				await rcedit(exePath, { icon: path.join(root, 'resources', 'win32', 'code.ico') });
+			} catch (e) {
+				console.warn(`Could not patch icon for ${exePath}: ${e.message}`);
+			}
+		}));
 	};
 }
 
