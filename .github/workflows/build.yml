@@ -58,7 +58,8 @@ jobs:
 
       - name: Build
         run: |
-          node ./node_modules/gulp/bin/gulp.js vscode-linux-x64-min
+          # Menggunakan vscode-linux-x64 (non-min) untuk kestabilan OSS
+          node ./node_modules/gulp/bin/gulp.js vscode-linux-x64
           node ./node_modules/gulp/bin/gulp.js vscode-linux-x64-build-deb
           node ./node_modules/gulp/bin/gulp.js vscode-linux-x64-build-rpm
 
@@ -157,7 +158,7 @@ jobs:
 
       - name: Build
         run: |
-          node ./node_modules/gulp/bin/gulp.js vscode-darwin-x64-min
+          node ./node_modules/gulp/bin/gulp.js vscode-darwin-x64
 
       - name: Prepare Artifact
         run: |
