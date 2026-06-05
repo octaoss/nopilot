@@ -110,23 +110,37 @@ jobs:
 
       - name: Build
         run: |
-          # Patch Gulpfile sudah menggunakan try-catch pada rcedit, build PASTI sukses sekarang.
+          # Build portable version
           node ./node_modules/gulp/bin/gulp.js vscode-win32-x64-min
+          # Build installers
+          node ./node_modules/gulp/bin/gulp.js vscode-win32-x64-inno-updater
+          node ./node_modules/gulp/bin/gulp.js vscode-win32-x64-user-setup
+          node ./node_modules/gulp/bin/gulp.js vscode-win32-x64-system-setup
 
       - name: Prepare Artifact
         shell: pwsh
         run: |
           $version = (Get-Content package.json | ConvertFrom-Json).version
+          # Portable ZIP
           if (Test-Path ../VSCode-win32-x64) {
             Move-Item ../VSCode-win32-x64 ./octanopilot-win32-x64
             Compress-Archive -Path octanopilot-win32-x64 -DestinationPath "octanopilot-win32-x64-$version.zip"
+          }
+          # Installers
+          if (Test-Path .build/win32-x64/user-setup/VSCodeSetup.exe) {
+            Copy-Item .build/win32-x64/user-setup/VSCodeSetup.exe -Destination "octanopilot-user-setup-x64-$version.exe"
+          }
+          if (Test-Path .build/win32-x64/system-setup/VSCodeSetup.exe) {
+            Copy-Item .build/win32-x64/system-setup/VSCodeSetup.exe -Destination "octanopilot-system-setup-x64-$version.exe"
           }
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: windows-artifact
-          path: octanopilot-win32-x64-*.zip
+          path: |
+            octanopilot-win32-x64-*.zip
+            octanopilot-*-setup-x64-*.exe
 
   build-macos:
     name: Build macOS
