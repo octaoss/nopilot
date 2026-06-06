@@ -76,7 +76,7 @@ jobs:
           find .build/linux/rpm -name "*.rpm" -exec cp {} release-artifacts/ \;
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: linux-artifact
           path: release-artifacts/*
@@ -136,7 +136,7 @@ jobs:
           }
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: windows-artifact
           path: |
@@ -184,7 +184,7 @@ jobs:
           fi
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: macos-artifact
           path: octanopilot-darwin-x64-*.zip
