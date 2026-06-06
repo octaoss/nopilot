@@ -1,8 +1,22 @@
+<p align="center">
+<img width="200" alt="icon" src="https://github.com/user-attachments/assets/1056a92c-4ef5-4682-8e66-28bdf611db61" />
+</p>
+
+<h1 align="center">Nopilot</h1>
+
+<div id="badges" align="center">
+  
+[![license](https://img.shields.io/github/license/VSCodium/vscodium.svg)](https://github.com/octaoss/nopilot/blob/master/LICENSE)
+![GitHub last commit](https://img.shields.io/github/last-commit/octaoss/nopilot)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/octaoss/nopilot/build.yml)
+![GitHub Release Date](https://img.shields.io/github/release-date/octaoss/nopilot)
+![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/octaoss/nopilot/total)
+
+</div>
+
+
+
 # Nopilot (Based On) Visual Studio Code - Open Source
-
-[![Feature Requests](https://img.shields.io/github/issues/microsoft/vscode/feature-request.svg)](https://github.com/microsoft/vscode/issues?q=is%3Aopen+is%3Aissue+label%3Afeature-request+sort%3Areactions-%2B1-desc)
-[![Gitter](https://img.shields.io/badge/chat-on%20gitter-yellow.svg)](https://gitter.im/Microsoft/vscode)
-
 
 In a world of AI-assisted development and bloated tooling, NoPilot brings the focus back to the developer. Lightweight, transparent, and intentionally free from AI integrations, NoPilot is built for those who prefer skilln over suggestion and control over automation. Your editor should be a tool — not a co-author.
 
@@ -11,6 +25,8 @@ In a world of AI-assisted development and bloated tooling, NoPilot brings the fo
 - **No Telemetry:** Privacy-first, telemetry is disabled by default.
 - **Just Code:** Lightweight and focused on the core editing experience.
 
+
+> Modification By [@yohanesokta](https://github.com/yohanesokta)
 
 # Includes Extension
 
