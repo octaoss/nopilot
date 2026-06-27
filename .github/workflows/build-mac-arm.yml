@@ -1,0 +1,86 @@
+name: Build macOS ARM64 Release
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  NODE_OPTIONS: "--max-old-space-size=8192"
+
+jobs:
+  build-macos-arm64:
+    name: Build macOS ARM64
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: 'npm'
+
+      - name: Setup Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Dependencies
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          npm_config_foreground_scripts: "true"
+        run: |
+          pip install setuptools
+          npm ci
+
+      - name: Download Built-in Extensions
+        run: npm run download-builtin-extensions
+
+      - name: Build
+        run: |
+          node ./node_modules/gulp/bin/gulp.js vscode-darwin-arm64
+
+      - name: Prepare Artifact
+        run: |
+          VERSION=$(jq -r .version package.json)
+          if [ -d "../VSCode-darwin-arm64" ]; then
+            mv ../VSCode-darwin-arm64 ./octanopilot-darwin-arm64
+            zip -r "octanopilot-darwin-arm64-${VERSION}.zip" octanopilot-darwin-arm64
+          fi
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-arm64-artifact
+          path: octanopilot-darwin-arm64-*.zip
+
+  release:
+    name: Create Draft Release
+    needs: [build-macos-arm64]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get Version
+        id: get_version
+        run: echo "VERSION=$(jq -r .version package.json)" >> $GITHUB_OUTPUT
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+
+      - name: Create Draft Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Nopilot ${{ steps.get_version.outputs.VERSION }}
+          tag_name: v${{ steps.get_version.outputs.VERSION }}
+          draft: true
+          files: artifacts/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

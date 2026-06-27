@@ -2,8 +2,6 @@ name: Build Binaries Release
 
 on:
   workflow_dispatch:
-  push:
-    branches: ["fix/*"]
 
 permissions:
   contents: write
